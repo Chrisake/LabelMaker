@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Label Maker Web App</title>
+    <link rel="stylesheet" href="lib/css/bootstrap.min.css">
+    <link rel="stylesheet" href="lib/css/bootstrap-theme.min.css">
+    <script src="lib/js/jquery-3.6.0.min.js"></script>
+    <script src="lib/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="main.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <div class="container">
+      <div class="alert alert-overlay" id="alertOverlay" role="alert" theme="primary">
+        This is a primary alert - check it out!
+      </div>
+      <h1>New Label</h1>
+      <form class="row g-3 needs-validation" novalidate>
+        <div class="form-group">
+          <label for="fullName">ApiName:</label>
+          <input type="text" class="form-control" id="fullName" pattern="[A-Z][a-zA-Z0-9]*" required>
+          <div class="invalid-feedback">Should Start with a capital letter and contain only alphanumeric characters</div>
+        </div>
+        <div class="form-group">
+          <label for="value">Value:</label>
+          <input type="text" class="form-control" id="value" required>
+          <div class="invalid-feedback">Cannot be empty</div>
+        </div>
+        <div class="form-group">
+          <label for="categories">Category:</label>
+          <input type="text" class="form-control" id="categories">
+        </div>
+        <div class="form-group">
+          <label for="shortDescription">Description:</label>
+          <input type="text" class="form-control" id="shortDescription">
+        </div>
+        <div class="form-group">
+          <label for="language">Language:</label>
+          <input type="text" class="form-control" id="language" placeholder="en_US" >
+        </div>
+      </form>
+      <button class="btn btn-primary" onclick="submit()">Submit form</button>
+    </div>
+  </body>
+</html>

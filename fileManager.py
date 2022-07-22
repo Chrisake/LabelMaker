@@ -13,21 +13,25 @@ class fileManager:
   def __init__(self) -> None:
     pass
     
-  def selectFolder(self):
+  def selectFolder(self,p=None):
     while(True):
-      rootFolder = filedialog.askdirectory(title="Select Project Root Folder")
-      if rootFolder == '': return None
-      print(rootFolder)
+      if p is None:
+        rootFolder = filedialog.askdirectory(title="Select Project Root Folder")
+        if rootFolder == '': return None
+      else:
+        rootFolder = p
       # Check if folder matches criteria
       customLabelsPath = path.join(rootFolder, rootFolder, 'src/labels/CustomLabels.labels')
       labelsAKPath = path.join(rootFolder, 'src/lwc/labelsAK/labelsAK.js')
       labelsLZPath = path.join(rootFolder, 'src/lwc/labelsLZ/labelsLZ.js')
-      print(customLabelsPath)
-      print(labelsAKPath)
-      print(labelsLZPath)
+      p = None
       if not path.exists(customLabelsPath): continue
       if not path.exists(labelsAKPath): continue
       if not path.exists(labelsLZPath): continue
+      print(rootFolder)
+      print(customLabelsPath)
+      print(labelsAKPath)
+      print(labelsLZPath)
       self.rootFolder = rootFolder
       self.customLabelsPath = customLabelsPath
       self.labelsAKPath = labelsAKPath

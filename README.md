@@ -32,7 +32,7 @@ means you are ready for the next step!
 Clone the repository to a folder by running 
 
 ```bash
-git clone 'https://github.com/Chrisake/LabelMaker'
+git clone https://github.com/Chrisake/LabelMaker
 ```
 
 open the folder that was created and run

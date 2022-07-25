@@ -9,6 +9,7 @@ import json
 import os
 from tabulate import tabulate as tb
 import math
+from tqdm import tqdm
 
 HOST_NAME = 'localhost'
 PORT = 8000
@@ -99,6 +100,9 @@ def CheckFileConsistency():
   else:
     print('All Labels are imported')
 
+def stringConstantLength(s,length):
+  return "{:<{length}}".format(s,length=length) if len(s)<length else s[:length-3]+'...'
+
 def LookForUnusedLabels():
   labels = manager.getLabelsFromJS(file='AK')
   labels = labels + manager.getLabelsFromJS(file='LZ')
@@ -106,9 +110,11 @@ def LookForUnusedLabels():
   uses = {}
   for l in labels:
     uses[l['name']] = 0
-  for folder,dirs,file in os.walk(rootdir+'\\src'):
+  t = tqdm(list(os.walk(rootdir+'\\src')))
+  for folder,dirs,file in t:
     if len([folder for exc in ['contentassets','documents','siteDotComSites','staticresources','translations'] if exc in folder])>0: continue
     for files in [f for f in file if f not in ['labelsAK.js','labelsLZ.js','CustomLabels.labels']]:
+      t.desc = stringConstantLength(files,40)
       try:
         with open(os.path.join(folder,files),'r',encoding='UTF-8') as fileObj:
           fileData = fileObj.read()

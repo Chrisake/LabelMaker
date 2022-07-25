@@ -25,9 +25,18 @@ class fileManager:
       labelsAKPath = path.join(rootFolder, 'src/lwc/labelsAK/labelsAK.js')
       labelsLZPath = path.join(rootFolder, 'src/lwc/labelsLZ/labelsLZ.js')
       p = None
-      if not path.exists(customLabelsPath): continue
-      if not path.exists(labelsAKPath): continue
-      if not path.exists(labelsLZPath): continue
+      if not path.exists(customLabelsPath):
+        print(f'Could not find Custom labels file:\n{customLabelsPath}')
+        input('Press Enter to continue...')
+        continue
+      if not path.exists(labelsAKPath): 
+        print(f'Could not find labelsAK js file:\n{labelsAKPath}')
+        input('Press Enter to continue...')
+        continue
+      if not path.exists(labelsLZPath):
+        print(f'Could not find labelsLZ js file:\n{labelsLZPath}')
+        input('Press Enter to continue...')
+        continue
       print(rootFolder)
       print(customLabelsPath)
       print(labelsAKPath)

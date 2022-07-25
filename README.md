@@ -1,15 +1,17 @@
 # LabelMaker
 
-# Instalation
+## Instalation
 This project is built on python 3.10
-First install python 3.10 https://www.python.org/downloads/release/python-3105/
+First install python 3.10 [Python 3.10.5](https://www.python.org/downloads/release/python-3105/)
 You can check the version of your python installation by running
 
-```py -V```
-
+```bash
+py -V
+```
 or
-
-```python -V```
+```bash
+python -V
+```
 
 You should get something like 
 
@@ -17,27 +19,36 @@ Python 3.10.x
 
 Then check pip version and verify it is running on the correct version of python by running
 
-```pip -V```
+```bash
+pip -V
+```
 
 If you get something like:
 
 pip 21.2.3 from C:\\*\\*\lib\site-packages\pip (python 3.10)
 
-means you are ready for the next step
+means you are ready for the next step!
+
 Clone the repository to a folder by running 
 
-```git clone 'https://github.com/Chrisake/LabelMaker'```
+```bash
+git clone 'https://github.com/Chrisake/LabelMaker'
+```
 
 open the folder that was created and run
 
-```pip -r requirements.txt```
+```bash
+pip -r requirements.txt
+```
 
 Wait for all the needed packages to be installed and you are ready to use this tool
 
-# Usage
+## Usage
 Open a cmd on the cloned folder and run
 
-```py main.py```
+```bash
+py main.py
+```
 
 A browser window will open up the first time you run the tool to select the project directory you want to work with
 

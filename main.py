@@ -45,7 +45,6 @@ def StartWebAppServer():
       pass
   httpd.server_close()
   print(f'[{time.asctime()}]\tStop Server - {HOST_NAME}:{PORT}')
-  raise NotImplementedError('Web App has not been implemented yet.')
 
 def CheckJSFiles():
   labels = manager.getLabelsFromJS('AK')
@@ -57,6 +56,7 @@ def CheckJSFiles():
     print('Labels with different names from customLabel:')
     for l in inconsistent:
       print(f'{l["name"]} - {l["object"]}')
+  input('Press Enter to continue...')
 
 def SortFileContents():
   labelsObjs = manager.getLabelsFromXML()
@@ -69,6 +69,7 @@ def SortFileContents():
   JSlabelsLZ.sort(key=lambda x: x['name'].lower())
   manager.saveLabelsToJS(JSlabelsLZ,file='LZ')
   print('DONE!')
+  input('Press Enter to continue...')
 
 def CheckFileConsistency():
   labelsObjs = manager.getLabelsFromXML()
@@ -99,6 +100,7 @@ def CheckFileConsistency():
     menu.show()
   else:
     print('All Labels are imported')
+  input('Press Enter to continue...')
 
 def stringConstantLength(s,length):
   return "{:<{length}}".format(s,length=length) if len(s)<length else s[:length-3]+'...'
@@ -128,10 +130,10 @@ def LookForUnusedLabels():
   if len(unusedLabels) > 0:
     print(f'{len(unusedLabels)} Unused Labels:')
     printSplitStrings([l['name'] for l in unusedLabels],5)
-    input('Press Enter to continue...')
     # print(unusedLabels)
   else:
     print('No unused labels found')
+  input('Press Enter to continue...')
 
 def printSplitStrings(ls,columns=3):
   num = len(ls)

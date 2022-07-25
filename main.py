@@ -6,6 +6,9 @@ from http.server import HTTPServer
 from server import Server
 import time
 import json
+import os
+from tabulate import tabulate as tb
+import math
 
 HOST_NAME = 'localhost'
 PORT = 8000
@@ -80,9 +83,9 @@ def CheckFileConsistency():
     if not l['fullName'] in labelApis:
       notImportedLabels.append(l['fullName'])
   if len(notImportedLabels) > 0:
-    print('The Following label Api names are not imported in JS files:')
-    for l in notImportedLabels:
-      print(l)
+    print(f'The Following label Api names are not imported in JS files: {len(notImportedLabels)}')
+    printSplitStrings(notImportedLabels,5)
+    input('Press Enter to continue...')
     menu = ConsoleMenu(f"Do you want to delete those {len(notImportedLabels)} labels", "")
     def delete():
       nil = set(notImportedLabels)
@@ -95,6 +98,47 @@ def CheckFileConsistency():
     menu.show()
   else:
     print('All Labels are imported')
+
+def LookForUnusedLabels():
+  labels = manager.getLabelsFromJS(file='AK')
+  labels = labels + manager.getLabelsFromJS(file='LZ')
+  rootdir = manager.rootFolder
+  uses = {}
+  for l in labels:
+    uses[l['name']] = 0
+  for folder,dirs,file in os.walk(rootdir+'\\src'):
+    if len([folder for exc in ['contentassets','documents','siteDotComSites','staticresources','translations'] if exc in folder])>0: continue
+    for files in [f for f in file if f not in ['labelsAK.js','labelsLZ.js','CustomLabels.labels']]:
+      try:
+        with open(os.path.join(folder,files),'r',encoding='UTF-8') as fileObj:
+          fileData = fileObj.read()
+        for l in labels:
+          if l["name"] in fileData:
+            uses[l['name']] += 1
+      except:
+        print(folder)
+  
+  unusedLabels = [l for l in labels if uses[l['name']]==0]
+  if len(unusedLabels) > 0:
+    print(f'{len(unusedLabels)} Unused Labels:')
+    printSplitStrings([l['name'] for l in unusedLabels],5)
+    input('Press Enter to continue...')
+    # print(unusedLabels)
+  else:
+    print('No unused labels found')
+
+def printSplitStrings(ls,columns=3):
+  num = len(ls)
+  itemsPerColumn = math.ceil(num/columns)
+  table = []
+  for i in range(itemsPerColumn):
+    row=[]
+    for c in range(columns):
+      idx = c * itemsPerColumn + i
+      row.append(ls[idx] if idx < num else '')
+    table.append(row)
+  print(tb(table))
+  
 
 def loadConfiguration():
   try:
@@ -120,21 +164,16 @@ if __name__=="__main__":
 
   menu = ConsoleMenu("Label Maker", "Please Choose an action to continue")
   AddLabelsSubMenu = ConsoleMenu("Add Labels","Choose a method:")
-  ChangeProjectDir = FunctionItem("Change Project Directory", manager.selectFolder, [])
-  AddFromConsole = FunctionItem("Command Line", AddLabelsCommandLine, [])
-  AddFromWebApp = FunctionItem("Web Application", StartWebAppServer, [])
   RepairSubMenu = ConsoleMenu("Repair Files","Choose an action:")
-  CheckFiles = FunctionItem("Check Javascript import files", CheckJSFiles, [])
-  CheckLabelConsistency = FunctionItem("Check File Consistency", CheckFileConsistency, [])
-  SortFiles = FunctionItem("Sort file contents", SortFileContents, [])
-  AddLabelsSubMenu.append_item(AddFromConsole)
-  AddLabelsSubMenu.append_item(AddFromWebApp)
-  RepairSubMenu.append_item(CheckFiles)
-  RepairSubMenu.append_item(SortFiles)
-  RepairSubMenu.append_item(CheckLabelConsistency)
+  AddLabelsSubMenu.append_item(FunctionItem("Command Line", AddLabelsCommandLine, []))
+  AddLabelsSubMenu.append_item(FunctionItem("Web Application", StartWebAppServer, []))
+  RepairSubMenu.append_item(FunctionItem("Check Javascript import files", CheckJSFiles, []))
+  RepairSubMenu.append_item(FunctionItem("Sort file contents", SortFileContents, []))
+  RepairSubMenu.append_item(FunctionItem("Check File Consistency", CheckFileConsistency, []))
+  RepairSubMenu.append_item(FunctionItem("Look for unused labels", LookForUnusedLabels, []))
   al_submenu_item = SubmenuItem("Add Labels", AddLabelsSubMenu, menu)
   r_submenu_item = SubmenuItem("Repair Files", RepairSubMenu, menu)
-  menu.append_item(ChangeProjectDir)
+  menu.append_item(FunctionItem("Change Project Directory", manager.selectFolder, []))
   menu.append_item(al_submenu_item)
   menu.append_item(r_submenu_item)
   menu.show()

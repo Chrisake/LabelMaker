@@ -46,7 +46,7 @@ def StartWebAppServer():
   httpd.server_close()
   print(f'[{time.asctime()}]\tStop Server - {HOST_NAME}:{PORT}')
 
-def CheckJSFiles():
+def CheckFileConsistency():
   labels = manager.getLabelsFromJS('AK')
   labels = labels + manager.getLabelsFromJS('LZ')
   inconsistent = [l for l in labels if l['name']!=l['object']]
@@ -71,7 +71,7 @@ def SortFileContents():
   print('DONE!')
   input('Press Enter to continue...')
 
-def CheckFileConsistency():
+def CheckJSFiles():
   labelsObjs = manager.getLabelsFromXML()
   JSlabelsAK = manager.getLabelsFromJS(file='AK')
   JSlabelsLZ = manager.getLabelsFromJS(file='LZ')
@@ -88,7 +88,7 @@ def CheckFileConsistency():
     print(f'The Following label Api names are not imported in JS files: {len(notImportedLabels)}')
     printSplitStrings(notImportedLabels,5)
     input('Press Enter to continue...')
-    menu = ConsoleMenu(f"Do you want to delete those {len(notImportedLabels)} labels", "")
+    menu = ConsoleMenu(f"What do you want to do with those {len(notImportedLabels)} labels?", "")
     def delete():
       nil = set(notImportedLabels)
       newObjs = []
@@ -96,7 +96,18 @@ def CheckFileConsistency():
         if obj['fullName'] not in nil:
           newObjs.append(obj)
       manager.saveLabelsToXML(newObjs)
-    menu.append_item(FunctionItem("Yes",delete,[],should_exit=True))
+    def imprt():
+      for l in notImportedLabels:
+        if l[0].lower()<='k':
+          JSlabelsAK.append({'name':l,'object':l})
+        else:
+          JSlabelsLZ.append({'name':l,'object':l})
+      JSlabelsAK.sort(key=lambda x: x['name'].lower())
+      manager.saveLabelsToJS(JSlabelsAK,file='AK')
+      JSlabelsLZ.sort(key=lambda x: x['name'].lower())
+      manager.saveLabelsToJS(JSlabelsLZ,file='LZ')
+    menu.append_item(FunctionItem("Delete labels from CustomLabels file",delete,[],should_exit=True))
+    menu.append_item(FunctionItem("Import labels to JS",imprt,[],should_exit=True))
     menu.show()
   else:
     print('All Labels are imported')
@@ -106,12 +117,12 @@ def stringConstantLength(s,length):
   return "{:<{length}}".format(s,length=length) if len(s)<length else s[:length-3]+'...'
 
 def LookForUnusedLabels():
-  labels = manager.getLabelsFromJS(file='AK')
-  labels = labels + manager.getLabelsFromJS(file='LZ')
+  labels = manager.getLabelsFromXML()
   rootdir = manager.rootFolder
   uses = {}
   for l in labels:
-    uses[l['name']] = 0
+    uses[l['fullName']] = 0
+  apiNames = list(uses.keys())
   t = tqdm(list(os.walk(rootdir+'\\src')))
   for folder,dirs,file in t:
     if len([folder for exc in ['contentassets','documents','siteDotComSites','staticresources','translations'] if exc in folder])>0: continue
@@ -120,17 +131,17 @@ def LookForUnusedLabels():
       try:
         with open(os.path.join(folder,files),'r',encoding='UTF-8') as fileObj:
           fileData = fileObj.read()
-        for l in labels:
-          if l["name"] in fileData:
-            uses[l['name']] += 1
+        for l in apiNames:
+          if l in fileData:
+            uses[l] += 1
       except:
         print(folder)
   
-  unusedLabels = [l for l in labels if uses[l['name']]==0]
+  unusedLabels = [l for l in apiNames if uses[l]==0]
   if len(unusedLabels) > 0:
     print(f'{len(unusedLabels)} Unused Labels:')
-    printSplitStrings([l['name'] for l in unusedLabels],5)
-    # print(unusedLabels)
+    printSplitStrings(unusedLabels,5)
+    
   else:
     print('No unused labels found')
   input('Press Enter to continue...')
@@ -176,7 +187,7 @@ if __name__=="__main__":
   AddLabelsSubMenu.append_item(FunctionItem("Command Line", AddLabelsCommandLine, []))
   AddLabelsSubMenu.append_item(FunctionItem("Web Application", StartWebAppServer, []))
   RepairSubMenu.append_item(FunctionItem("Check Javascript import files", CheckJSFiles, []))
-  RepairSubMenu.append_item(FunctionItem("Sort file contents", SortFileContents, []))
+  RepairSubMenu.append_item(FunctionItem("Reformat label files", SortFileContents, []))
   RepairSubMenu.append_item(FunctionItem("Check File Consistency", CheckFileConsistency, []))
   RepairSubMenu.append_item(FunctionItem("Look for unused labels", LookForUnusedLabels, []))
   al_submenu_item = SubmenuItem("Add Labels", AddLabelsSubMenu, menu)

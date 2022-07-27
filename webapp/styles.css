@@ -61,3 +61,50 @@
 .alert-overlay.show{
   top: 1%;
 }
+
+.hidden {
+  display:None;
+}
+
+.hr {
+  margin: 50px 0;
+  position: relative;
+}
+.hr:after {
+  --color: #f1d479;
+  color:var(--color);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  content: "";
+  width: 100%;
+  height: 2px;
+  display: block;
+  background: var(--color);
+  background-image: linear-gradient(to right, white,var(--color),white);
+}
+
+focus {
+  background-color: yellow;
+}
+
+.tableFixHead {
+  overflow-y: auto;
+  height: 106px;
+}
+.tableFixHead thead th {
+  position: sticky;
+  top: 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th,
+td {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+}
+th {
+  background: #eee;
+}

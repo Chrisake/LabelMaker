@@ -6,7 +6,7 @@ BASE_URL = 'webapp/'
 
 import os
 class Server(BaseHTTPRequestHandler):
-  manager = None
+  manager:fm.fileManager = None
   def do_GET(self):
     if self.path == '/' or self.path == '/?':
       self.path = '/index.html'
@@ -38,7 +38,16 @@ class Server(BaseHTTPRequestHandler):
           self.end_headers()
         except Exception as e:
           self.send_error(400,e.message if hasattr(e, 'message') else e)
-        
+        return
+      if self.path == '/getLabels':
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.end_headers()
+        labels = self.manager.getLabelsFromXML()
+        imported = set([l['name'] for l in self.manager.getLabelsFromJS('AK')+self.manager.getLabelsFromJS('LZ')])
+        for l in labels:
+          l['imported'] = l['fullName'] in imported
+        self.wfile.write(json.dumps(labels).encode(encoding='utf_8'))
         return
       f = "Service not found"
       self.send_error(404,f)

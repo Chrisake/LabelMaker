@@ -10,13 +10,13 @@
     <script src="main.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
-  <body>
+  <body onload="init()">
     <div class="container">
       <div class="alert alert-overlay" id="alertOverlay" role="alert" theme="primary">
         This is a primary alert - check it out!
       </div>
       <h1>New Label</h1>
-      <form class="row g-3 needs-validation" novalidate>
+      <form class="g-3 needs-validation" novalidate>
         <div class="form-group">
           <label for="fullName">ApiName:</label>
           <input type="text" class="form-control" id="fullName" pattern="[A-Z][a-zA-Z0-9]*" required>
@@ -40,7 +40,43 @@
           <input type="text" class="form-control" id="language" placeholder="en_US" >
         </div>
       </form>
-      <button class="btn btn-primary" onclick="submit()">Submit form</button>
+      <button class="btn btn-primary" onclick="submit()">Create Label</button>
+      <div class="hr">&nbsp;</div>
+      <div id="searchControls" style="margin: 30px 0;display:flex;flex-direction:row;justify-content:space-between;align-items:flex-end;gap:10px;">
+        <div style="flex-grow:1;">
+          <label for="search">Search:</label>
+          <input type="text" class="form-control" id="searchInput" placeholder="Search Labels here" onkeyup="updateSearchResults()">
+        </div>
+        <div>
+          <button class="btn btn-primary" id="refreshLabels" onclick="refreshLabels()">Refresh</button>
+        </div>
+      </div>
+      <div style="height:90vh;overflow:auto;">
+        <table class="table tableFixHead" style="margin-bottom:0;">
+          <thead>
+            <tr>
+              <th scope="col">ApiName</th>
+              <th scope="col">Category</th>
+              <th scope="col">Description</th>
+              <th scope="col">Value</th>
+              <th scope="col">Imported</th>
+            </tr>
+          </thead>
+          <tbody id="tableContent">
+          </tbody>
+        </table>
+      </div>
+      <div style="display:None">
+        <table>
+          <tr id="rowPrototype">
+            <td id="fullName"></th>
+            <td id="categories"></td>
+            <td id="shortDescription"></td>
+            <td id="value"></td>
+            <td id="imported"></td>
+          </tr>
+        </table>
+      </div>
     </div>
   </body>
 </html>

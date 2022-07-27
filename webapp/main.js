@@ -25,16 +25,76 @@ function submit() {
         data: JSON.stringify(newLabel),
         contentType: 'application/json; charset=utf-8',
         success: function () {
-          document.querySelector('input[id="fullName"]').value = ''
-          document.querySelector('input[id="value"]').value = ''
+          document.querySelector('input[id="fullName"]').value = '';
+          document.querySelector('input[id="value"]').value = '';
+          refreshLabels();
           alertOVRL('Label created','success');
         },
         error: function(xhr, status, error) {
           alertOVRL(xhr.statusText,'error');
         }
-    });
+      });
     }
   }
+}
+
+function init() {
+  refreshLabels();
+}
+
+labels = []
+
+function refreshLabels() {
+  document.querySelector("#refreshLabels")?.setAttribute('disabled','');
+  $.ajax({
+    url: '/getLabels',
+    type: "POST",
+    success: function (xhr,status,state) {
+      document.querySelector("#refreshLabels")?.removeAttribute('disabled');
+      if(state.status==200){
+        labels = xhr;
+        updateSearchResults();
+      }
+    },
+    error: function(xhr, status, error) {
+      document.querySelector("#refreshLabels")?.removeAttribute('disabled');
+      alertOVRL(xhr.statusText,'error');
+    }
+  });
+}
+
+results = []
+function updateSearchResults () {
+  const query = document.querySelector('#searchInput')?.value;
+  let reA,ReB;
+  if(query && query.length>=2) {
+    const re = new RegExp(query,'i');
+    reA = new RegExp('(?<='+query+')','i');
+    reB = new RegExp('(?='+query+')','i');
+    results = labels.filter((l)=>{
+      return re.test(l.fullName) ||
+        re.test(l.categories) ||
+        re.test(l.value) ||
+        re.test(l.shortDescription)
+    })
+  } else {
+    results = []
+  }
+  const row = document.querySelector("#rowPrototype");
+  const tableContent = document.querySelector('#tableContent');
+  if(!row || !tableContent) return;
+  tableContent.innerHTML = '';
+  results.forEach( r => {
+    const newRow = row.cloneNode(true);
+    newRow.removeAttribute("id");
+    Object.keys(r).forEach(key => {
+      const field = newRow.querySelector('#'+key);
+      if (field) {
+        field.innerHTML = r[key].toString().replace(reB,'<focus>').replace(reA,'</focus>'); 
+      }
+    });
+    tableContent.appendChild(newRow);
+  });
 }
 
 let alertTimeout = null

@@ -77,7 +77,7 @@ class fileManager:
     for label in labels:
       newObj = {}
       for content in label.contents:
-        if type(content) is str: continue
+        if content.name is None or content.name == 'null' or content.name =='': continue
         title = content.name
         value = content.text
         newObj[title] = value

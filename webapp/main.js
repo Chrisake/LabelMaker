@@ -66,11 +66,9 @@ function refreshLabels() {
 results = []
 function updateSearchResults () {
   const query = document.querySelector('#searchInput')?.value;
-  let reA,ReB;
+  let re;
   if(query && query.length>=2) {
-    const re = new RegExp(query,'i');
-    reA = new RegExp('(?<='+query+')','i');
-    reB = new RegExp('(?='+query+')','i');
+    re = new RegExp(query,'i');
     results = labels.filter((l)=>{
       return re.test(l.fullName) ||
         re.test(l.categories) ||
@@ -90,7 +88,7 @@ function updateSearchResults () {
     Object.keys(r).forEach(key => {
       const field = newRow.querySelector('#'+key);
       if (field) {
-        field.innerHTML = r[key].toString().replace(reB,'<focus>').replace(reA,'</focus>'); 
+        field.innerHTML = r[key].toString().replace(re,'<focus>$&</focus>'); 
       }
     });
     tableContent.appendChild(newRow);

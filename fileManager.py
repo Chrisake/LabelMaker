@@ -97,7 +97,11 @@ class fileManager:
       fcl.write('</CustomLabels>\n')
   
   def escapeChars(self, txt):
-    return txt.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+    return txt.replace("&","&amp;")\
+      .replace("<","&lt;")\
+      .replace(">","&gt;")\
+      .replace("'","&apos;")\
+      .replace("\"","&quot;")
   
   def getLabelsFromJS(self,file='AK'):
     with  open(self.labelsLZPath if file == 'LZ' else self.labelsAKPath, 'r', encoding='UTF-8') as fl:

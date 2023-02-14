@@ -1,6 +1,6 @@
 # LabelMaker
 
-## Instalation
+## Installation
 This project is built on python 3.10
 First install python 3.10 [Python 3.10.5](https://www.python.org/downloads/release/python-3105/)
 

@@ -103,6 +103,7 @@ class fileManager:
       .replace("'","&apos;")\
       .replace("\"","&quot;")\
       .replace("\n","&#xA;")\
+      .replace("\\n","&#xA;")\
       .replace("\r","&#xD;")
   
   def getLabelsFromJS(self,file='AK'):

@@ -101,7 +101,9 @@ class fileManager:
       .replace("<","&lt;")\
       .replace(">","&gt;")\
       .replace("'","&apos;")\
-      .replace("\"","&quot;")
+      .replace("\"","&quot;")\
+      .replace("\n","&#xA;")\
+      .replace("\r","&#xD;")
   
   def getLabelsFromJS(self,file='AK'):
     with  open(self.labelsLZPath if file == 'LZ' else self.labelsAKPath, 'r', encoding='UTF-8') as fl:

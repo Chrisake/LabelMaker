@@ -39,7 +39,7 @@ git clone https://github.com/Chrisake/LabelMaker
 open the folder that was created and run
 
 ```bash
-pip -r requirements.txt
+pip install -r requirements.txt
 ```
 
 Wait for all the needed packages to be installed and you are ready to use the tool
